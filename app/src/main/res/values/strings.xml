@@ -1,0 +1,48 @@
+<resources>
+    <string name="app_name">RojgariHub</string>
+
+    <string name="show_password">Show Password</string>
+    <string name="hide_password">Hide Password</string>
+    <string name="registration_successful">Registration Successful</string>
+    <string name="create_account">Create account</string>
+    <string name="capture_your_thoughts_and_ideas">Capture your thoughts and ideas.</string>
+    <string name="example_email">john.doe@example.com</string>
+    <string name="example_username">John.doe</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="repeat_password">Repeat Password</string>
+    <string name="username_info">Use between 3 and 20 characters for your username</string>
+    <string name="username_error">Username must be at least %d characters</string>
+    <string name="invalid_email">Invalid email provided</string>
+    <string name="password_do_not_match">Passwords do not match</string>
+    <string name="password_info">Use 8+ characters with a number or symbol for better security</string>
+    <string name="password_error">Password must be at least %d characters and include a number or symbol</string>
+    <string name="already_have_an_account">Already have an account?</string>
+    <string name="your_own_collection_of_notes">Your Own Collection of Notes</string>
+    <string name="get_started">Get Started</string>
+    <string name="login">Log In</string>
+
+
+    <string name="error_email_password_incorrect">Either email or password is incorrect.</string>
+    <string name="error_disk_full">Failed to save the item because your disk is full.</string>
+    <string name="error_request_timeout">The request timed out.</string>
+    <string name="error_too_many_requests">You\'ve hit your rate limit.</string>
+    <string name="error_no_internet">Couldn\'t reach server, please check your connection.</string>
+    <string name="error_payload_too_large">The file you\'re trying to upload is too large.</string>
+    <string name="error_server_error">Oops, something went wrong, please try again.</string>
+    <string name="error_serialization">Oops, couldn\'t parse data.</string>
+    <string name="error_unknown">An unknown error occurred.</string>
+    <string name="error_conflict">Username or Email already exists!</string>
+    <string name="login_successful">Login Successful</string>
+    <string name="error_email_exist">Already email exist</string>
+    <string name="post_job_success">Successfully job posted.</string>
+    <string name="go_back">Go Back</string>
+    <string name="open_menu">Open Menu</string>
+    <string name="profile">Profile</string>
+    <string name="logout">Logout</string>
+    <string name="no_jobs_available">Either no jobs available at the moment</string>
+    <string name="empty_jobs">You haven\'t posted any jobs,\nlet’s create job now!</string>
+    <string name="empty_save_jobs">You haven\'t saved any jobs,\nlet’s save job now!</string>
+    <string name="my_saved_jobs">Saved Jobs</string>
+</resources>
