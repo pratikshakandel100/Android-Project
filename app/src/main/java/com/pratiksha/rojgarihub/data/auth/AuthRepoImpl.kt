@@ -15,12 +15,12 @@ class AuthRepoImpl(
     private val httpClient: HttpClient,
     private val sessionStorage: SessionStorage
 ) : AuthRepository {
-    override suspend fun login(
+    override suspend fun loginEmployer(
         email: String,
         password: String
     ): EmptyResult<DataError.Network> {
         val result = httpClient.post<LoginRequest, LoginResponse>(
-            route = ApiEndpoints.LOGIN_ENDPOINT,
+            route = ApiEndpoints.EMPLOYER_LOGIN_ENDPOINT,
             body = LoginRequest(
                 email = email,
                 password = password
@@ -30,14 +30,38 @@ class AuthRepoImpl(
             sessionStorage.setAuthInfo(
                 AuthInfo(
                     accessToken = result.data.token,
-                    userId = result.data.userId
+                    userId = result.data.userId,
+                    userType = result.data.userType
                 )
             )
         }
         return result.asEmptyDataResult()
     }
 
-    override suspend fun register(
+    override suspend fun loginJobSeeker(
+        email: String,
+        password: String
+    ): EmptyResult<DataError.Network> {
+        val result = httpClient.post<LoginRequest, LoginResponse>(
+            route = ApiEndpoints.JOB_SEEKER_LOGIN_ENDPOINT,
+            body = LoginRequest(
+                email = email,
+                password = password
+            )
+        )
+        if (result is Result.Success) {
+            sessionStorage.setAuthInfo(
+                AuthInfo(
+                    accessToken = result.data.token,
+                    userId = result.data.userId,
+                    userType = result.data.userType
+                )
+            )
+        }
+        return result.asEmptyDataResult()
+    }
+
+    override suspend fun registerEmployer(
         email: String,
         password: String,
         firstName: String,
@@ -46,7 +70,7 @@ class AuthRepoImpl(
         companyName: String
     ): EmptyResult<DataError.Network> {
         return httpClient.post<RegisterRequest, Unit>(
-            route = ApiEndpoints.REGISTER_ENDPOINT,
+            route = ApiEndpoints.EMPLOYER_REGISTER_ENDPOINT,
             body = RegisterRequest(
                 email = email,
                 password = password,
@@ -55,6 +79,27 @@ class AuthRepoImpl(
                 companyName = companyName,
                 phone = phone,
                 confirmPassword = password
+            )
+        )
+    }
+
+    override suspend fun registerJobSeeker(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        phone: String
+    ): EmptyResult<DataError.Network> {
+        return httpClient.post<RegisterRequest, Unit>(
+            route = ApiEndpoints.JOB_SEEKER_REGISTER_ENDPOINT,
+            body = RegisterRequest(
+                email = email,
+                password = password,
+                firstName = firstName,
+                lastName = lastName,
+                phone = phone,
+                confirmPassword = password,
+                companyName = ""
             )
         )
     }

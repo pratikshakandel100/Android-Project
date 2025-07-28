@@ -6,13 +6,15 @@ import com.pratiksha.rojgarihub.domain.auth.AuthInfo
 fun AuthInfo.toAuthInfoSerializable(): AuthInfoSerializable {
     return AuthInfoSerializable(
         accessToken = accessToken,
-        userId = userId
+        userId = userId,
+        userType = userType
     )
 }
 
 fun AuthInfoSerializable.toAuthInfo(): AuthInfo {
     return AuthInfo(
         accessToken = accessToken,
-        userId = userId
+        userId = userId,
+        userType = userType
     )
 }
