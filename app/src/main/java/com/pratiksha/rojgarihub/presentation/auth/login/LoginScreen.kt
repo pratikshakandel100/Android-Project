@@ -1,6 +1,7 @@
 package com.pratiksha.rojgarihub.presentation.auth.login
 
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,6 +19,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pratiksha.rojgarihub.R
+import com.pratiksha.rojgarihub.presentation.auth.UserType
 import com.pratiksha.rojgarihub.ui.EyeClosedIcon
 import com.pratiksha.rojgarihub.ui.EyeOpenedIcon
 import com.pratiksha.rojgarihub.ui.ObserveAsEvents
@@ -70,7 +73,7 @@ fun LoginScreenRoot(
 }
 
 @Composable
-private fun LoginScreen(
+fun LoginScreen(
     state: LoginState,
     onAction: (LoginAction) -> Unit
 ) {
@@ -89,10 +92,45 @@ private fun LoginScreen(
             tint = Color.Blue
         )
 
-        Text("Employer Portal", fontSize = 24.sp, color = Color.Blue, fontWeight = FontWeight.Bold)
-        Text("Sign in to find your dream job", color = Color.Black, fontSize = 14.sp)
+        Text(
+            text = if (state.loginAs == UserType.EMPLOYER) "Employer Portal" else "Job Seeker Portal",
+            fontSize = 24.sp,
+            color = Color.Blue,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = if (state.loginAs == UserType.EMPLOYER)
+                "Sign in to post jobs and manage hiring"
+            else
+                "Sign in to find your dream job",
+            color = Color.Black,
+            fontSize = 14.sp
+        )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(24.dp))
+
+        // 🔘 Radio Buttons for Login Type
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = state.loginAs == UserType.EMPLOYER,
+                    onClick = { onAction(LoginAction.LoginAsChanged(UserType.EMPLOYER)) }
+                )
+                Text("Employer",modifier = Modifier.clickable{onAction(LoginAction.LoginAsChanged(UserType.EMPLOYER))})
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = state.loginAs == UserType.JOB_SEEKER,
+                    onClick = { onAction(LoginAction.LoginAsChanged(UserType.JOB_SEEKER)) }
+                )
+                Text("Job Seeker",modifier = Modifier.clickable{onAction(LoginAction.LoginAsChanged(UserType.JOB_SEEKER))})
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = state.email,
@@ -143,7 +181,7 @@ private fun LoginScreen(
                 .fillMaxWidth()
                 .padding(vertical = 16.dp)
         ) {
-            Text("Sign In as Employee")
+            Text("Login")
         }
 
         HorizontalDivider(Modifier)

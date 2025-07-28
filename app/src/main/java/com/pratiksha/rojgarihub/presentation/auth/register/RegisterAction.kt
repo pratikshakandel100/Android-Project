@@ -1,6 +1,9 @@
 package com.pratiksha.rojgarihub.presentation.auth.register
 
+import com.pratiksha.rojgarihub.presentation.auth.UserType
+
 sealed interface RegisterAction {
+    data class RegisterAsChanged(val value: UserType) : RegisterAction
     data class FirstNameChanged(val value: String) : RegisterAction
     data class LastNameChanged(val value: String) : RegisterAction
     data class EmailChanged(val value: String) : RegisterAction

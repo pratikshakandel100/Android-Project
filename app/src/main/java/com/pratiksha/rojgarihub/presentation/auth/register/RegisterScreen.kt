@@ -1,7 +1,10 @@
 package com.pratiksha.rojgarihub.presentation.auth.register
 
+import android.widget.RadioButton
 import android.widget.Toast
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +24,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -37,6 +41,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pratiksha.rojgarihub.R
+import com.pratiksha.rojgarihub.presentation.auth.UserType
 import com.pratiksha.rojgarihub.ui.EyeClosedIcon
 import com.pratiksha.rojgarihub.ui.EyeOpenedIcon
 import com.pratiksha.rojgarihub.ui.ObserveAsEvents
@@ -103,11 +108,44 @@ private fun RegisterScreen(
             tint = Color.Blue
         )
 
-        Text("Register as Employer", fontSize = 24.sp, color = Color.Blue, fontWeight = FontWeight.Bold)
-        Text("Register to find your dream job", color = Color.Black, fontSize = 14.sp)
+        Text(
+            text = if (state.registerAs == UserType.EMPLOYER) "Register as Employer" else "Register as Job Seeker",
+            fontSize = 24.sp,
+            color = Color.Blue,
+            fontWeight = FontWeight.Bold
+        )
+        Text(
+            text = if (state.registerAs == UserType.EMPLOYER) "Register to post jobs for hiring" else "Register to find your dream job",
+            color = Color.Black,
+            fontSize = 14.sp
+        )
 
-        Spacer(modifier = Modifier.height(30.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
+        // Radio Buttons for role selection
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = state.registerAs == UserType.EMPLOYER,
+                    onClick = { onAction(RegisterAction.RegisterAsChanged(UserType.EMPLOYER)) }
+                )
+                Text("Employer",modifier = Modifier.clickable{onAction(RegisterAction.RegisterAsChanged(UserType.EMPLOYER))})
+            }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                RadioButton(
+                    selected = state.registerAs == UserType.JOB_SEEKER,
+                    onClick = { onAction(RegisterAction.RegisterAsChanged(UserType.JOB_SEEKER)) }
+                )
+                Text("Job Seeker", modifier = Modifier.clickable{
+                    onAction(RegisterAction.RegisterAsChanged(UserType.JOB_SEEKER))
+                })
+            }
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         OutlinedTextField(
             value = state.firstName,
@@ -139,12 +177,14 @@ private fun RegisterScreen(
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone)
         )
 
-        OutlinedTextField(
-            value = state.companyName,
-            onValueChange = { onAction(RegisterAction.CompanyNameChanged(it)) },
-            label = { Text("Company Name") },
-            modifier = Modifier.fillMaxWidth()
-        )
+        if (state.registerAs == UserType.EMPLOYER) {
+            OutlinedTextField(
+                value = state.companyName,
+                onValueChange = { onAction(RegisterAction.CompanyNameChanged(it)) },
+                label = { Text("Company Name") },
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
 
         OutlinedTextField(
             value = state.password,

@@ -1,6 +1,10 @@
 package com.pratiksha.rojgarihub.presentation.auth.register
 
+import com.pratiksha.rojgarihub.presentation.auth.UserType
+
+
 data class RegisterState(
+    val registerAs: UserType = UserType.EMPLOYER,
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",

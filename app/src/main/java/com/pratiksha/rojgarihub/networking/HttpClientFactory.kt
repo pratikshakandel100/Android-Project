@@ -40,7 +40,6 @@ class HttpClientFactory(
                             accessToken = authInfo?.accessToken ?: "",
                             refreshToken = ""
                         )
-                        println(" accessToken: ${bearerTokens.accessToken}")
                         Timber.tag("MyTag").d(" accessToken: ${bearerTokens.accessToken}")
                         bearerTokens
                     }
