@@ -15,6 +15,7 @@ import com.pratiksha.rojgarihub.presentation.auth.login.LoginViewModel
 import com.pratiksha.rojgarihub.presentation.auth.register.RegisterViewModel
 import com.pratiksha.rojgarihub.presentation.job.list_job.ListJobViewModel
 import com.pratiksha.rojgarihub.presentation.job.post_job.PostJobViewModel
+import com.pratiksha.rojgarihub.presentation.job.save_jobs.SavedJobListViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
 import org.koin.core.module.dsl.singleOf
@@ -49,6 +50,7 @@ val diModule = module {
     viewModelOf(::LoginViewModel)
     viewModelOf(::PostJobViewModel)
     viewModelOf(::ListJobViewModel)
+    viewModelOf(::SavedJobListViewModel)
 
     singleOf(::AuthRepoImpl).bind<AuthRepository>()
     singleOf(::JobRepoImpl).bind<JobRepository>()
