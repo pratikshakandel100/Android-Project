@@ -27,6 +27,9 @@ sealed interface Screens {
     data object JobList : Screens
 
     @Serializable
+    data object SavedJobList : Screens
+
+    @Serializable
     data class UpsertJob(val jobId: String) : Screens
 
 }

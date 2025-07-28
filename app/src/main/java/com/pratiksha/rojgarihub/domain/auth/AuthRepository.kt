@@ -4,8 +4,16 @@ import com.pratiksha.rojgarihub.domain.util.DataError
 import com.pratiksha.rojgarihub.domain.util.EmptyResult
 
 interface AuthRepository {
-    suspend fun login(email: String, password: String): EmptyResult<DataError.Network>
-    suspend fun register(
+    suspend fun loginJobSeeker(email: String, password: String): EmptyResult<DataError.Network>
+    suspend fun registerJobSeeker(
+        email: String,
+        password: String,
+        firstName: String,
+        lastName: String,
+        phone: String,
+    ): EmptyResult<DataError.Network>
+    suspend fun loginEmployer(email: String, password: String): EmptyResult<DataError.Network>
+    suspend fun registerEmployer(
         email: String,
         password: String,
         firstName: String,

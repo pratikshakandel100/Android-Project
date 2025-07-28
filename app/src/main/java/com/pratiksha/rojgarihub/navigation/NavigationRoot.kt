@@ -13,6 +13,7 @@ import com.pratiksha.rojgarihub.presentation.auth.login.LoginScreenRoot
 import com.pratiksha.rojgarihub.presentation.auth.register.RegisterScreenRoot
 import com.pratiksha.rojgarihub.presentation.job.list_job.JobListScreenRoot
 import com.pratiksha.rojgarihub.presentation.job.post_job.PostJobScreenRoot
+import com.pratiksha.rojgarihub.presentation.job.save_jobs.SavedJobListScreenRoot
 
 @Composable
 fun NavigationRoot(
@@ -82,6 +83,9 @@ private fun NavGraphBuilder.jobGraph(navController: NavHostController) {
                 onAddJobClick = {
                     navController.navigate(Screens.AddJob)
                 },
+                onSavedJobClick = {
+                    navController.navigate(Screens.SavedJobList)
+                },
                 onLogOutClick = {
                     navController.navigate(Screens.AuthGraph) {
                         popUpTo(Screens.JobGraph) {
@@ -90,10 +94,15 @@ private fun NavGraphBuilder.jobGraph(navController: NavHostController) {
                     }
                 },
                 onEditJobClick = { jobId ->
-                    navController.navigate(
-                        Screens.AddJob
-                    )
+                    navController.navigate(Screens.AddJob)
                 }
+            )
+        }
+        composable<Screens.SavedJobList> {
+            SavedJobListScreenRoot(
+                onBackClick = {
+                    navController.navigateUp()
+                },
             )
         }
         composable<Screens.AddJob> {
