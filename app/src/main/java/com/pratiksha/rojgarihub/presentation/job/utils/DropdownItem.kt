@@ -1,4 +1,4 @@
-package com.pratiksha.rojgarihub.presentation.job.list_job.utils
+package com.pratiksha.rojgarihub.presentation.job.utils
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

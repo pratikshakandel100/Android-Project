@@ -1,6 +1,6 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 
-package com.pratiksha.rojgarihub.presentation.job.list_job
+package com.pratiksha.rojgarihub.presentation.job.save_jobs
 
 
 import android.widget.Toast
@@ -11,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -31,36 +29,27 @@ import androidx.compose.ui.unit.dp
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.pratiksha.rojgarihub.R
-import com.pratiksha.rojgarihub.presentation.auth.UserType
-import com.pratiksha.rojgarihub.presentation.job.components.JobDetailCard
-import com.pratiksha.rojgarihub.presentation.job.utils.DropdownItem
-import com.pratiksha.rojgarihub.ui.JobFloatingActionButton
+import com.pratiksha.rojgarihub.presentation.job.components.SavedJobDetailCard
 import com.pratiksha.rojgarihub.ui.JobScaffold
 import com.pratiksha.rojgarihub.ui.JobTopAppBar
 import com.pratiksha.rojgarihub.ui.LogoIcon
-import com.pratiksha.rojgarihub.ui.LogoutIcon
 import com.pratiksha.rojgarihub.ui.ObserveAsEvents
 import com.pratiksha.rojgarihub.ui.theme.RojgariHubTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun JobListScreenRoot(
-    onAddJobClick: () -> Unit,
-    onSavedJobClick: () -> Unit,
-    onEditJobClick: (String) -> Unit,
-    onLogOutClick: () -> Unit,
-
-    viewModel: ListJobViewModel = koinViewModel<ListJobViewModel>()
+fun SavedJobListScreenRoot(
+    onBackClick: () -> Unit,
+    viewModel: SavedJobListViewModel = koinViewModel<SavedJobListViewModel>()
 ) {
     val context = LocalContext.current
     ObserveAsEvents(viewModel.events) { event ->
         when (event) {
-            is ListJobEvent.NavigateToUpsertNote -> onEditJobClick(event.noteId)
-            is ListJobEvent.SuccessSave -> {
-                Toast.makeText(context, "You Saved this job", Toast.LENGTH_SHORT).show()
+            is SavedJobListEvent.SuccessRemoved -> {
+                Toast.makeText(context, "Removed from save job", Toast.LENGTH_SHORT).show()
             }
 
-            is ListJobEvent.SuccessApply -> {
+            is SavedJobListEvent.SuccessApply -> {
                 Toast.makeText(context, "Application Submitted", Toast.LENGTH_SHORT).show()
             }
 
@@ -68,13 +57,14 @@ fun JobListScreenRoot(
         }
 
     }
-    JobListScreen(
+    SavedJobListScreen(
         state = viewModel.state,
         onAction = {
             when (it) {
-                ListJobAction.AddJobClick -> onAddJobClick()
-                ListJobAction.LogoutClick -> onLogOutClick()
-                ListJobAction.SaveJobClick -> onSavedJobClick()
+                is SaveJobListAction.BackClick -> {
+                    onBackClick()
+                }
+
                 else -> Unit
             }
             viewModel.onAction(it)
@@ -83,16 +73,16 @@ fun JobListScreenRoot(
 }
 
 @Composable
-fun JobListScreen(
-    state: ListJobState,
-    onAction: (ListJobAction) -> Unit
+private fun SavedJobListScreen(
+    state: SavedJobListState,
+    onAction: (SaveJobListAction) -> Unit
 ) {
     val topAppBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(state = topAppBarState)
     JobScaffold(
         topAppBar = {
             JobTopAppBar(
-                showBackButton = false,
+                showBackButton = true,
                 title = stringResource(R.string.app_name),
                 scrollBehavior = scrollBehavior,
                 startContent = {
@@ -103,52 +93,18 @@ fun JobListScreen(
                         modifier = Modifier.size(30.dp)
                     )
                 },
-                menuItems = if (state.userType == UserType.JOB_SEEKER) {
-                    listOf(
-                        DropdownItem(
-                            icon = LogoIcon,
-                            title = stringResource(R.string.my_saved_jobs)
-                        ),
-                        DropdownItem(icon = LogoutIcon, title = stringResource(R.string.logout)))
-                } else {
-                    listOf(
-                        DropdownItem(icon = LogoutIcon, title = stringResource(R.string.logout))
-                    )
-                },
-
-                onMenuItemClick = if(state.userType== UserType.JOB_SEEKER){
-                    { index ->
-                        when (index) {
-                            0 -> onAction(ListJobAction.SaveJobClick)
-                            1 -> onAction(ListJobAction.LogoutClick)
-                        }
-                    }
-                } else {
-                    { index ->
-                        when (index) {
-                            0 -> onAction(ListJobAction.LogoutClick)
-                        }
-                    }
+                onBackClick = {
+                    onAction(SaveJobListAction.BackClick)
                 },
                 modifier = Modifier
             )
         },
-        floatingActionButton = {
-            if (state.userType == UserType.EMPLOYER) {
-                JobFloatingActionButton(
-                    icon = Icons.Default.Add,
-                    onClick = {
-                        onAction(ListJobAction.AddJobClick)
-                    }
-                )
-            }
-        }
     ) { paddingValues ->
         val refreshState = rememberSwipeRefreshState(isRefreshing = state.isRefreshing)
 
         SwipeRefresh(
             state = refreshState,
-            onRefresh = { onAction(ListJobAction.RefreshJobs) }
+            onRefresh = { onAction(SaveJobListAction.RefreshJobs) }
         ) {
             if (!state.jobs.isEmpty()) {
                 LazyColumn(
@@ -163,18 +119,13 @@ fun JobListScreen(
                         items = state.jobs,
                         key = { it.id }
                     ) {
-                        JobDetailCard(
+                        SavedJobDetailCard(
                             job = it,
-                            onEditClick = { onAction(ListJobAction.UpsertJob(it)) },
-                            onDeleteClick = {
-                                onAction(ListJobAction.DeleteJob(it))
+                            onRemovedSaveJobClick = {
+                                onAction(SaveJobListAction.RemoveSavedJob(it))
                             },
-                            userType = state.userType,
                             onApplyJob = {
-                                onAction(ListJobAction.ApplyJobs)
-                            },
-                            onSaveJob = {
-                                onAction(ListJobAction.SaveJob(it))
+                                onAction(SaveJobListAction.ApplyJobs)
                             },
                             modifier = Modifier.animateItem()
                         )
@@ -198,11 +149,7 @@ fun JobListScreen(
                         ) {
                             Text(
                                 modifier = Modifier,
-                                text = if (state.userType == UserType.JOB_SEEKER) {
-                                    stringResource(R.string.no_jobs_available)
-                                } else {
-                                    stringResource(R.string.empty_jobs)
-                                },
+                                text = stringResource(R.string.empty_save_jobs),
                                 style = MaterialTheme.typography.titleMedium.copy(
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     textAlign = TextAlign.Center
@@ -221,8 +168,8 @@ fun JobListScreen(
 @Composable
 private fun JobListScreenPreview() {
     RojgariHubTheme {
-        JobListScreen(
-            state = ListJobState(),
+        SavedJobListScreen(
+            state = SavedJobListState(),
             onAction = {}
         )
     }

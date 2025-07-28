@@ -1,4 +1,4 @@
-package com.pratiksha.rojgarihub.presentation.job.list_job.components
+package com.pratiksha.rojgarihub.presentation.job.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,18 +33,19 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.pratiksha.rojgarihub.domain.job.Job
-import com.pratiksha.rojgarihub.presentation.job.list_job.mapper.toJobUi
-import com.pratiksha.rojgarihub.presentation.job.list_job.model.JobUi
+import com.pratiksha.rojgarihub.presentation.auth.UserType
+import com.pratiksha.rojgarihub.presentation.job.mapper.toJobUi
+import com.pratiksha.rojgarihub.presentation.job.model.JobUi
 import com.pratiksha.rojgarihub.ui.CashIcon
 import com.pratiksha.rojgarihub.ui.JobDialog
 import com.pratiksha.rojgarihub.ui.TimeIcon
 import com.pratiksha.rojgarihub.ui.theme.RojgariHubTheme
 
 @Composable
-fun JobDetailCard(
+fun SavedJobDetailCard(
     job: JobUi,
-    onEditClick: () -> Unit,
-    onDeleteClick: (JobUi) -> Unit,
+    onRemovedSaveJobClick: (JobUi) -> Unit,
+    onApplyJob: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var showDialog by remember { mutableStateOf(false) }
@@ -166,12 +167,12 @@ fun JobDetailCard(
             ) {
                 // Action Button
                 TextButton(
-                    onClick = onEditClick,
+                    onClick = onApplyJob,
                     modifier = Modifier
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    Text("Edit")
+                    Text("Apply Job")
                 }
 
                 // Action Button
@@ -183,27 +184,28 @@ fun JobDetailCard(
                         .fillMaxWidth()
                         .weight(1f)
                 ) {
-                    Text("Delete")
+                    Text("Unsave")
                 }
             }
+
             if (showDialog) {
                 JobDialog(
-                    title = "Delete Job?",
-                    description = "Are you sure to delete `${job.title}` job?",
+                    title = "Unsave Job?",
+                    description = "Are you sure to unsave `${job.title}` job?",
                     onDismiss = {
                         showDialog = false
                     },
                     primaryActionButton = {
                         TextButton(
                             onClick = {
-                                onDeleteClick(job)
+                                onRemovedSaveJobClick(job)
                                 showDialog = false
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .weight(1f)
                         ) {
-                            Text("Delete")
+                            Text("Unsave")
                         }
                     },
                     secondaryActionButton = {
@@ -221,6 +223,7 @@ fun JobDetailCard(
                     modifier = Modifier,
                 )
             }
+
         }
     }
 }
@@ -241,8 +244,15 @@ private fun JobDetailCardPreview() {
                 type = "fulltime",
                 location = "Nepal"
             ).toJobUi(),
+            userType = UserType.EMPLOYER,
             onDeleteClick = {},
-            onEditClick = {}
+            onEditClick = {},
+            onSaveJob = {
+
+            },
+            onApplyJob = {
+
+            }
         )
     }
 }

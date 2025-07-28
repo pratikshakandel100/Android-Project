@@ -5,9 +5,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.pratiksha.rojgarihub.domain.job.Job
 import com.pratiksha.rojgarihub.domain.job.JobRepository
 import com.pratiksha.rojgarihub.domain.util.Result
+import com.pratiksha.rojgarihub.presentation.auth.login.LoginEvent
+import com.pratiksha.rojgarihub.presentation.job.mapper.toJob
+import com.pratiksha.rojgarihub.presentation.job.model.JobUi
 import com.pratiksha.rojgarihub.ui.asUiText
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.receiveAsFlow
@@ -45,30 +49,26 @@ class PostJobViewModel(
             return
         }
         viewModelScope.launch {
-            val response = jobRepository.upsertJob(
-                job = Job(
-                    id = "",
-                    title = state.jobTitle,
-                    description = state.jobDescription,
-                    requirements = state.requirements.split(","),
-                    location = state.location,
-                    type = state.jobType,
-                    salary = state.salaryRange,
-                    status = ""
-                )
-            )
+            val response = jobRepository.upsertJob(job = JobUi(
+                id = "",
+                title = state.jobTitle,
+                description = state.jobDescription,
+                requirements = state.requirements.split(","),
+                location = state.location,
+                type = state.jobType,
+                salary = state.salaryRange,
+                status = ""
+            ).toJob())
             println(response)
-            when (response) {
+            when(response){
                 is Result.Error -> {
                     _eventChannel.send(PostJobEvent.Error(response.error.asUiText()))
                 }
-
                 is Result.Success -> {
                     _eventChannel.send(PostJobEvent.PostJobSuccess)
                 }
             }
         }
         state = state.copy(errorMessage = null)
-        println("Job posted successfully!")
     }
 }

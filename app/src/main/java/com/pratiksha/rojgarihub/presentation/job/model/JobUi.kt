@@ -1,4 +1,4 @@
-package com.pratiksha.rojgarihub.presentation.job.list_job.model
+package com.pratiksha.rojgarihub.presentation.job.model
 
 data class JobUi(
     val id: String,
